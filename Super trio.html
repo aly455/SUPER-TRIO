@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Trio">
+<meta name="theme-color" content="#0a0a0f">
+<title>Trio</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0a0a0f;--bg2:#13131c;--bg3:#1c1c28;--bg4:#252535;
+  --border:#2a2a3a;--border2:#383850;
+  --txt:#eeeef5;--txt2:#9898b0;--txt3:#55556a;
+  --red:#C05060;--orange:#D07830;--yellow:#C8B030;
+  --green:#4A9E6A;--blue:#2A6EAA;--violet:#7060C0;
+  --expand:#3a7055;--contract:#8a3050;
+}
+html,body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;overscroll-behavior:none;}
+.app{max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
+
+/* TOP BAR */
+.topbar{padding:max(env(safe-area-inset-top),14px) 16px 10px;background:var(--bg2);border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.topbar-title{font-size:16px;font-weight:700;letter-spacing:.04em;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.topbar-time{font-size:10px;color:var(--txt3);}
+.log-btn{padding:6px 14px;border-radius:14px;background:var(--txt);color:var(--bg);border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s;}
+.log-btn:active{opacity:.8;}
+
+/* NAV */
+.nav{display:flex;background:var(--bg2);border-bottom:0.5px solid var(--border);flex-shrink:0;}
+.nav-btn{flex:1;padding:9px 2px 7px;border:none;background:transparent;color:var(--txt3);font-family:inherit;font-size:9px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;border-top:2px solid transparent;transition:all .15s;}
+.nav-btn.on{color:var(--txt);border-top-color:var(--blue);}
+.nav-icon{font-size:14px;line-height:1;}
+
+/* SCROLL */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:max(env(safe-area-inset-bottom),20px);}
+
+/* PANE */
+.pane{display:none;padding:14px 14px 28px;}
+.pane.on{display:block;}
+
+/* ── DASHBOARD ── */
+/* PRIMARY ROW */
+.primary-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.indicator-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.ind-label{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);text-align:center;}
+
+/* FELT COHERENCE CIRCLE */
+.fc-circle{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;border:3px solid transparent;transition:all .4s;}
+.fc-color-name{font-size:15px;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.5);text-transform:capitalize;}
+.fc-meaning{font-size:10px;color:rgba(255,255,255,0.65);margin-top:2px;letter-spacing:.03em;}
+
+/* REMAINING CAPACITY GAS GAUGE */
+.gauge-wrap{position:relative;width:120px;height:68px;}
+.gauge-svg{width:120px;height:120px;position:absolute;top:0;left:0;}
+.gauge-label{position:absolute;bottom:0px;left:50%;transform:translateX(-50%);text-align:center;width:100%;}
+.gauge-word{font-size:13px;font-weight:700;}
+.gauge-sub{font-size:9px;color:var(--txt3);margin-top:1px;}
+
+/* INTENSITY VS GROUNDING BAR */
+.igbar-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;}
+.igbar-title{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:10px;}
+.igbar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.igbar-row:last-child{margin-bottom:0;}
+.igbar-name{font-size:11px;font-weight:600;min-width:68px;flex-shrink:0;}
+.igbar-track{flex:1;height:10px;background:var(--bg4);border-radius:5px;overflow:hidden;position:relative;}
+.igbar-fill{height:100%;border-radius:5px;transition:width .4s,background .4s;}
+.igbar-val{font-size:12px;font-weight:700;min-width:20px;text-align:right;flex-shrink:0;}
+.igbar-word{font-size:10px;min-width:72px;flex-shrink:0;}
+
+/* SECONDARY INDICATORS GRID */
+.secondary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.sec-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 12px;}
+.sec-label{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;}
+
+/* RHYTHM WORD */
+.rhythm-words{display:flex;flex-direction:column;gap:4px;}
+.rhy-word{padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer;border:0.5px solid var(--border2);background:transparent;color:var(--txt3);font-family:inherit;text-align:left;transition:all .15s;width:100%;}
+.rhy-word.sel{color:#fff;border-color:transparent;}
+
+/* INTENSITY GAUGE */
+.int-gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.int-bar-wrap{width:100%;height:8px;background:var(--bg4);border-radius:4px;overflow:hidden;}
+.int-bar-fill{height:100%;border-radius:4px;transition:width .3s,background .3s;}
+.int-val-row{display:flex;justify-content:space-between;width:100%;font-size:9px;color:var(--txt3);}
+.int-number{font-size:22px;font-weight:700;text-align:center;}
+
+/* DIRECTION */
+.direction-display{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.dir-icon{font-size:28px;line-height:1;transition:all .3s;}
+.dir-word{font-size:12px;font-weight:700;text-align:center;}
+.dir-sub{font-size:10px;color:var(--txt3);text-align:center;line-height:1.4;}
+
+/* METABOLISM CIRCLE */
+.meta-circle{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;border:3px solid transparent;transition:all .4s;}
+.meta-circle-label{font-size:12px;font-weight:800;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.4);}
+.meta-circle-sub{font-size:9px;color:rgba(255,255,255,0.65);margin-top:2px;text-align:center;}
+
+/* INTERVENTION */
+.intervention-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;}
+.int-card-title{font-size:10px;font-weight:600;color:var(--txt2);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.int-card-icon{font-size:14px;}
+.intervention-text{font-size:12px;line-height:1.7;color:var(--txt2);}
+.intervention-actions{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.int-action{padding:5px 10px;border-radius:10px;font-size:11px;background:var(--bg3);border:0.5px solid var(--border2);color:var(--txt2);}
+
+/* ── LOG ── */
+.log-section{margin-bottom:14px;}
+.log-section-title{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;}
+
+/* COLOR PICKER */
+.color-pick-row{display:flex;justify-content:space-between;margin-bottom:16px;padding:0 2px;}
+.cp-circle{width:44px;height:44px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;transition:all .16s;position:relative;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+.cp-circle:active{transform:scale(.88);}
+.cp-circle.sel{border-color:#fff;transform:scale(1.12);box-shadow:0 0 14px rgba(255,255,255,0.2);}
+.cp-label{position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--txt3);white-space:nowrap;}
+
+/* SLIDERS */
+.slider-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:8px;}
+.slider-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.slider-row:last-child{margin-bottom:0;}
+.slider-name{font-size:11px;font-weight:600;min-width:72px;flex-shrink:0;}
+.slider-val{font-size:14px;font-weight:700;min-width:20px;text-align:right;flex-shrink:0;}
+.slider-track{flex:1;height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.slider-fill{height:100%;border-radius:2px;transition:width .2s,background .2s;}
+input[type=range]{width:100%;accent-color:var(--blue);height:22px;cursor:pointer;margin-top:3px;}
+
+/* RHYTHM TRANSITION */
+.rhy-trans-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.rhy-chip{padding:6px 11px;border-radius:10px;font-size:11px;cursor:pointer;border:0.5px solid var(--border2);background:transparent;color:var(--txt3);font-family:inherit;transition:all .15s;}
+.rhy-chip.sel{background:var(--txt);color:var(--bg);border-color:transparent;}
+
+/* EXPAND TOGGLE */
+.expand-toggle{display:flex;align-items:center;gap:7px;padding:10px 0;cursor:pointer;color:var(--txt3);font-size:12px;border:none;background:transparent;font-family:inherit;width:100%;}
+.expand-toggle-line{flex:1;height:0.5px;background:var(--border);}
+.expand-panel{display:none;}
+.expand-panel.open{display:block;}
+
+/* SUBMIT */
+.submit-btn{width:100%;padding:16px;border-radius:15px;background:var(--txt);color:var(--bg);border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:12px;transition:all .15s;}
+.submit-btn:active{opacity:.75;}
+.submit-btn.success{background:var(--blue);color:#fff;}
+
+/* HISTORY */
+.hist-entry{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:11px 13px;margin-bottom:8px;}
+.he-top{display:flex;align-items:center;gap:8px;margin-bottom:7px;}
+.he-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.he-time{font-size:11px;color:var(--txt3);}
+.he-color{font-size:12px;font-weight:600;}
+.he-dir{font-size:11px;margin-left:auto;}
+.del-btn{background:none;border:none;color:var(--txt3);font-size:16px;cursor:pointer;padding:1px 4px;line-height:1;}
+.he-bars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:5px;}
+.he-bar-lbl{font-size:9px;color:var(--txt3);margin-bottom:2px;}
+.he-bar-track{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.he-bar-fill{height:100%;border-radius:2px;}
+.he-note{font-size:11px;color:var(--txt2);margin-top:4px;line-height:1.5;}
+.group-lbl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px;margin-top:12px;}
+.group-lbl:first-child{margin-top:0;}
+.empty-state{text-align:center;padding:40px 14px;color:var(--txt3);font-size:13px;line-height:1.9;}
+.clear-btn{width:100%;padding:11px;border-radius:11px;background:transparent;border:0.5px solid var(--border2);color:var(--txt3);font-size:12px;cursor:pointer;font-family:inherit;margin-top:12px;}
+
+/* NO DATA */
+.no-data-msg{text-align:center;padding:30px 16px;color:var(--txt3);font-size:13px;line-height:1.8;}
+.no-data-btn{margin-top:12px;padding:10px 20px;border-radius:12px;background:var(--txt);color:var(--bg);border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div>
+    <div class="topbar-title">Trio</div>
+  </div>
+  <div class="topbar-right">
+    <span class="topbar-time" id="top-time"></span>
+    <button class="log-btn" onclick="setTab('log')">＋ Log</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn on" id="nav-now" onclick="setTab('now')"><span class="nav-icon">◎</span>Now</button>
+  <button class="nav-btn" id="nav-graphs" onclick="setTab('graphs')"><span class="nav-icon">〜</span>Graphs</button>
+  <button class="nav-btn" id="nav-history" onclick="setTab('history')"><span class="nav-icon">≡</span>History</button>
+</div>
+
+<div class="scroll">
+
+<!-- ── NOW / DASHBOARD ── -->
+<div class="pane on" id="pane-now">
+
+  <!-- No data state -->
+  <div id="dash-no-data" class="no-data-msg">
+    No check-in yet.<br>Tap <strong>＋ Log</strong> to record your current state.<br><br>
+    <button class="no-data-btn" onclick="setTab('log')">Log now</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dash-data" style="display:none;">
+
+    <!-- PRIMARY: Felt Coherence + Remaining Capacity -->
+    <div class="primary-row">
+      <div class="indicator-card">
+        <div class="ind-label">Felt Coherence</div>
+        <div class="fc-circle" id="fc-circle">
+          <div class="fc-color-name" id="fc-name"></div>
+          <div class="fc-meaning" id="fc-meaning"></div>
+        </div>
+      </div>
+      <div class="indicator-card">
+        <div class="ind-label">Remaining Capacity</div>
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 120 120" id="cap-svg">
+            <!-- Background track -->
+            <path d="M 14 90 A 46 46 0 0 1 106 90" fill="none" stroke="#252535" stroke-width="12" stroke-linecap="butt"/>
+            <!-- Yellow zone — 20% of arc, left sliver near Empty -->
+            <path d="M 14 90 A 46 46 0 0 1 22.8 63" fill="none" stroke="#C8B030" stroke-width="12" stroke-linecap="butt" opacity="0.55"/>
+            <!-- Green zone — 80% of arc, right sweep toward Full -->
+            <path d="M 22.8 63 A 46 46 0 0 1 106 90" fill="none" stroke="#4A9E6A" stroke-width="12" stroke-linecap="butt" opacity="0.5"/>
+            <!-- Dividing tick between yellow and green -->
+            <line x1="18" y1="76" x2="25" y2="69" stroke="#0a0a0f" stroke-width="2.5"/>
+            <!-- Needle — drawn pointing up from pivot, rotation applied via JS -->
+            <line id="cap-needle" x1="60" y1="90" x2="60" y2="48" style="stroke:#ffffff;stroke-width:3;stroke-linecap:round;"/>
+            <!-- Needle base cap -->
+            <circle cx="60" cy="90" r="6" fill="#2a2a3a" stroke="#ffffff" stroke-width="2"/>
+            <circle cx="60" cy="90" r="2.5" fill="#ffffff"/>
+            <!-- Empty label at left arc end -->
+            <text x="4" y="106" font-size="7.5" fill="#C8B030" font-family="-apple-system,sans-serif" font-weight="700">Empty</text>
+            <!-- Full label at right arc end -->
+            <text x="83" y="106" font-size="7.5" fill="#4A9E6A" font-family="-apple-system,sans-serif" font-weight="700">Full</text>
+          </svg>
+          <div class="gauge-label" style="bottom:14px;">
+            <div class="gauge-word" id="cap-word">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTENSITY VS GROUNDING BAR -->
+    <div class="igbar-card">
+      <div class="igbar-title">Intensity vs Grounding</div>
+      <div class="igbar-row">
+        <div class="igbar-name" id="ig-g-name" style="color:var(--blue);">Grounding</div>
+        <div class="igbar-track"><div class="igbar-fill" id="ig-g-fill"></div></div>
+        <div class="igbar-val" id="ig-g-val"></div>
+        <div class="igbar-word" id="ig-g-word"></div>
+      </div>
+      <div class="igbar-row">
+        <div class="igbar-name" id="ig-i-name" style="color:var(--orange);">Intensity</div>
+        <div class="igbar-track"><div class="igbar-fill" id="ig-i-fill"></div></div>
+        <div class="igbar-val" id="ig-i-val"></div>
+        <div class="igbar-word" id="ig-i-word"></div>
+      </div>
+    </div>
+
+    <!-- SECONDARY GRID: Rhythm + Intensity gauge + Direction + Metabolism -->
+    <div class="secondary-grid">
+
+      <!-- RHYTHM -->
+      <div class="sec-card">
+        <div class="sec-label">Rhythm</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="font-size:22px;font-weight:700;" id="rhy-word-display">—</div>
+          <div style="font-size:10px;color:var(--txt3);text-align:center;line-height:1.5;" id="rhy-desc"></div>
+          <div style="width:100%;height:4px;border-radius:2px;background:var(--bg4);overflow:hidden;margin-top:2px;">
+            <div id="rhy-bar" style="height:100%;border-radius:2px;transition:width .3s,background .3s;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIRECTION -->
+      <div class="sec-card">
+        <div class="sec-label">Direction</div>
+        <div class="direction-display">
+          <div class="dir-icon" id="dir-icon">—</div>
+          <div class="dir-word" id="dir-word"></div>
+          <div class="dir-sub" id="dir-sub"></div>
+        </div>
+      </div>
+
+      <!-- INTENSITY GAUGE -->
+      <div class="sec-card">
+        <div class="sec-label">Intensity</div>
+        <div class="int-gauge-wrap">
+          <div class="int-number" id="int-number">—</div>
+          <div style="font-size:11px;font-weight:600;text-align:center;margin-bottom:4px;" id="int-word"></div>
+          <div class="int-bar-wrap">
+            <div class="int-bar-fill" id="int-bar"></div>
+          </div>
+          <div class="int-val-row"><span>low</span><span>optimal</span><span>high</span></div>
+        </div>
+      </div>
+
+      <!-- METABOLISM -->
+      <div class="sec-card">
+        <div class="sec-label">Coherence Metabolism</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div class="meta-circle" id="meta-circle">
+            <div class="meta-circle-label" id="meta-label">—</div>
+            <div class="meta-circle-sub" id="meta-sub"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- INTERVENTION CARD -->
+    <div class="intervention-card" id="intervention-card">
+      <div class="int-card-title">
+        <span class="int-card-icon" id="int-icon"></span>
+        <span id="int-title"></span>
+      </div>
+      <div class="intervention-text" id="int-text"></div>
+      <div class="intervention-actions" id="int-actions"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── LOG ── -->
+<div class="pane" id="pane-log">
+
+  <!-- FELT COHERENCE -->
+  <div class="log-section">
+    <div class="log-section-title">Felt Coherence — how do you feel right now?</div>
+    <div class="color-pick-row">
+      <div class="cp-circle" style="background:#C05060;" onclick="selColor('red',this)"><span class="cp-label">Red</span></div>
+      <div class="cp-circle" style="background:#D07830;" onclick="selColor('orange',this)"><span class="cp-label">Orange</span></div>
+      <div class="cp-circle" style="background:#C8B030;" onclick="selColor('yellow',this)"><span class="cp-label">Yellow</span></div>
+      <div class="cp-circle" style="background:#4A9E6A;" onclick="selColor('green',this)"><span class="cp-label">Green</span></div>
+      <div class="cp-circle" style="background:#2A6EAA;" onclick="selColor('blue',this)"><span class="cp-label">Blue</span></div>
+      <div class="cp-circle" style="background:#7060C0;" onclick="selColor('violet',this)"><span class="cp-label">Violet</span></div>
+    </div>
+  </div>
+
+  <!-- GROUNDING (simple) -->
+  <div class="log-section">
+    <div class="log-section-title">Grounding — how anchored do you feel?</div>
+    <div class="slider-card">
+      <div class="slider-row">
+        <div class="slider-name" style="color:var(--blue);">Grounding</div>
+        <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="sg-fill" style="background:var(--blue);width:60%;"></div></div>
+        <input type="range" min="0" max="10" step="1" value="6" id="sg-sl" oninput="onSimpleSlider('sg')"></div>
+        <div class="slider-val" id="sg-val" style="color:var(--blue);">6</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--txt3);padding:0 2px;margin-top:2px;">
+        <span>uprooted</span><span>settled</span><span>anchored</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTENSITY (simple) -->
+  <div class="log-section">
+    <div class="log-section-title">Intensity — what is your current load?</div>
+    <div class="slider-card">
+      <div class="slider-row">
+        <div class="slider-name" style="color:var(--orange);">Intensity</div>
+        <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="si-fill" style="background:var(--orange);width:50%;"></div></div>
+        <input type="range" min="0" max="10" step="1" value="5" id="si-sl" oninput="onSimpleSlider('si')"></div>
+        <div class="slider-val" id="si-val" style="color:var(--orange);">5</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--txt3);padding:0 2px;margin-top:2px;">
+        <span>flat</span><span>optimal</span><span>overloaded</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RHYTHM TRANSITION -->
+  <div class="log-section">
+    <div class="log-section-title">Rhythm — how has your intensity been shifting?</div>
+    <div class="rhy-trans-row" id="rhy-chips">
+      <button class="rhy-chip" onclick="selRhy('spiky',this)">Spiky</button>
+      <button class="rhy-chip" onclick="selRhy('choppy',this)">Choppy</button>
+      <button class="rhy-chip" onclick="selRhy('uneven',this)">Uneven</button>
+      <button class="rhy-chip" onclick="selRhy('steady',this)">Steady</button>
+      <button class="rhy-chip" onclick="selRhy('flat',this)">Flat</button>
+    </div>
+  </div>
+
+  <!-- EXPAND TOGGLE -->
+  <button class="expand-toggle" onclick="toggleExpand()">
+    <span class="expand-toggle-line"></span>
+    <span id="expand-label">＋ Add deeper detail</span>
+    <span class="expand-toggle-line"></span>
+  </button>
+
+  <!-- EXPANDED INPUTS -->
+  <div class="expand-panel" id="expand-panel">
+
+    <!-- GROUNDING DETAIL -->
+    <div class="log-section" style="margin-top:10px;">
+      <div class="log-section-title">Grounding detail</div>
+      <div class="slider-card">
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--blue);">Safety</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="safety-fill" style="background:var(--blue);width:60%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="6" id="safety-sl" oninput="onDetailSlider('safety')"></div>
+          <div class="slider-val" id="safety-val" style="color:var(--blue);">6</div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--blue);">Presence</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="presence-fill" style="background:var(--blue);width:60%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="6" id="presence-sl" oninput="onDetailSlider('presence')"></div>
+          <div class="slider-val" id="presence-val" style="color:var(--blue);">6</div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--blue);">Anchoring</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="anchoring-fill" style="background:var(--blue);width:60%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="6" id="anchoring-sl" oninput="onDetailSlider('anchoring')"></div>
+          <div class="slider-val" id="anchoring-val" style="color:var(--blue);">6</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTENSITY DETAIL -->
+    <div class="log-section">
+      <div class="log-section-title">Intensity detail</div>
+      <div class="slider-card">
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--orange);">Body Charge</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="body-fill" style="background:var(--orange);width:50%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="5" id="body-sl" oninput="onDetailSlider('body')"></div>
+          <div class="slider-val" id="body-val" style="color:var(--orange);">5</div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--orange);">Mind Speed</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="mind-fill" style="background:var(--orange);width:50%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="5" id="mind-sl" oninput="onDetailSlider('mind')"></div>
+          <div class="slider-val" id="mind-val" style="color:var(--orange);">5</div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--orange);">Emotional</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="emotional-fill" style="background:var(--orange);width:50%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="5" id="emotional-sl" oninput="onDetailSlider('emotional')"></div>
+          <div class="slider-val" id="emotional-val" style="color:var(--orange);">5</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIRECTION / METABOLISM INPUTS -->
+    <div class="log-section">
+      <div class="log-section-title">System quality</div>
+      <div class="slider-card">
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--violet);">Focus</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="focus-fill" style="background:var(--violet);width:50%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="5" id="focus-sl" oninput="onDetailSlider('focus')"></div>
+          <div class="slider-val" id="focus-val" style="color:var(--violet);">5</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--txt3);padding:0 2px;margin-top:0;margin-bottom:6px;"><span>lantern</span><span>laser</span></div>
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--yellow);">Tone</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="tone-fill" style="background:var(--yellow);width:50%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="5" id="tone-sl" oninput="onDetailSlider('tone')"></div>
+          <div class="slider-val" id="tone-val" style="color:var(--yellow);">5</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--txt3);padding:0 2px;margin-top:0;margin-bottom:6px;"><span>dark/muted</span><span>bright/uplifted</span></div>
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--green);">Energy Dir.</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="size-fill" style="background:var(--green);width:50%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="5" id="size-sl" oninput="onDetailSlider('size')"></div>
+          <div class="slider-val" id="size-val" style="color:var(--green);">5</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--txt3);padding:0 2px;margin-top:0;margin-bottom:6px;"><span>inward/contracted</span><span>outward/expansive</span></div>
+        <div class="slider-row">
+          <div class="slider-name" style="color:var(--green);">Openness</div>
+          <div style="flex:1;"><div class="slider-track"><div class="slider-fill" id="open-fill" style="background:var(--green);width:50%;"></div></div>
+          <input type="range" min="0" max="10" step="1" value="5" id="open-sl" oninput="onDetailSlider('open')"></div>
+          <div class="slider-val" id="open-val" style="color:var(--green);">5</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--txt3);padding:0 2px;margin-top:0;"><span>closed</span><span>open/allowing</span></div>
+      </div>
+    </div>
+
+  </div><!-- expand panel -->
+
+  <button class="submit-btn" id="submit-btn" onclick="submitEntry()">Log this moment</button>
+</div>
+
+<!-- ── GRAPHS ── -->
+<div class="pane" id="pane-graphs">
+  <div id="graphs-no-data" class="no-data-msg" style="display:none;">
+    Not enough data yet.<br>Log at least 2 check-ins to see your graphs.
+  </div>
+  <div id="graphs-content">
+
+    <!-- DIRECTION OVER TIME -->
+    <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;">
+      <div style="font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:4px;">Direction over time</div>
+      <div style="font-size:11px;color:var(--txt2);margin-bottom:10px;">Above midline = Coherence Spiral · Below = Dissonance Spiral</div>
+      <div style="position:relative;height:140px;"><canvas id="dir-chart"></canvas></div>
+    </div>
+
+    <!-- REMAINING CAPACITY OVER TIME -->
+    <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;">
+      <div style="font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:4px;">Remaining Capacity over time</div>
+      <div style="font-size:11px;color:var(--txt2);margin-bottom:10px;">Grounding minus Intensity — above 0 = resourced</div>
+      <div style="position:relative;height:120px;"><canvas id="cap-chart"></canvas></div>
+    </div>
+
+    <!-- GROUNDING VS INTENSITY OVER TIME -->
+    <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;">
+      <div style="font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:4px;">Grounding vs Intensity</div>
+      <div style="display:flex;gap:12px;margin-bottom:8px;">
+        <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--txt3);"><span style="width:14px;height:2px;background:var(--blue);display:inline-block;"></span>Grounding</span>
+        <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--txt3);"><span style="width:14px;height:2px;background:var(--orange);display:inline-block;border-top:2px dashed var(--orange);"></span>Intensity</span>
+      </div>
+      <div style="position:relative;height:120px;"><canvas id="gi-chart"></canvas></div>
+    </div>
+
+    <!-- FELT COHERENCE OVER TIME -->
+    <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;">
+      <div style="font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:4px;">Felt Coherence over time</div>
+      <div style="position:relative;height:100px;"><canvas id="fc-chart"></canvas></div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="pane" id="pane-history">
+  <div id="history-list"></div>
+</div>
+
+</div><!-- scroll -->
+</div><!-- app -->
+
+<script>
+const COL={red:'#C05060',orange:'#D07830',yellow:'#C8B030',green:'#4A9E6A',blue:'#2A6EAA',violet:'#7060C0'};
+const CM={red:'overloaded',orange:'urgent',yellow:'warning',green:'optimising',blue:'flow state',violet:'zen'};
+const RHY_CONFIG={
+  spiky:{color:'#C05060',desc:'Sharp sudden changes',bar:10},
+  choppy:{color:'#D07830',desc:'Frequent disruptions',bar:35},
+  uneven:{color:'#C8B030',desc:'Some fluctuation',bar:55},
+  steady:{color:'#4A9E6A',desc:'Consistent and smooth',bar:85},
+  flat:{color:'#7060C0',desc:'Low activation signal',bar:20},
+};
+const cForV=v=>v>=8?COL.blue:v>=6?COL.green:v>=4?COL.yellow:COL.red;
+
+function load(k,d){try{return JSON.parse(localStorage.getItem(k)||'null')||d;}catch(e){return d;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+let entries=load('trio3_entries',[]);
+let entryId=entries.length?Math.max(...entries.map(e=>e.id),0)+1:1;
+let selCol='green',selRhy_val=null,expandOpen=false;
+
+// ── CALCULATIONS ──
+function calcGrounding(e){
+  if(e.safety!==undefined&&e.presence!==undefined&&e.anchoring!==undefined){
+    return Math.round((e.safety+e.presence+e.anchoring)/3);
+  }
+  return e.grounding||5;
+}
+
+function calcIntensity(e){
+  if(e.body!==undefined&&e.mind!==undefined&&e.emotional!==undefined){
+    return Math.round((e.body+e.mind+e.emotional)/3);
+  }
+  return e.intensity||5;
+}
+
+function calcRemainingCapacity(g,i){
+  // Capacity is earned — both grounding AND intensity must be genuinely healthy.
+  // G5/I4 sits near the yellow boundary. G6/I5 just enters green. G8/I6 = full.
+
+  // Grounding score: ≤5=0, 6=0.4, 7=0.7, 8=0.85, 9=0.95, 10=1.0
+  const gScore=g<=5?0:g===6?0.4:g===7?0.7:g===8?0.85:g===9?0.95:1.0;
+
+  // Intensity score: optimal 5-8, both extremes penalise
+  const iScore=i<=3?0:i===4?0.3:i===5?0.75:i===6?1.0:i===7?0.9:i===8?0.75:i===9?0.3:0;
+
+  // Multiply — one weak score drags the whole result down
+  const raw=Math.round(gScore*iScore*100);
+
+  // Blend with raw diff to avoid cliff edges at exact thresholds
+  const diff=g-i;
+  const diffPct=Math.round(((diff+10)/20)*100);
+  const pct=Math.max(0,Math.min(100,Math.round(raw*0.75+diffPct*0.25)));
+
+  let color,word;
+  if(pct>=75){color=COL.green;word='Full';}
+  else if(pct>=45){color=COL.green;word='Good';}
+  else if(pct>=22){color=COL.yellow;word='Low fuel';}
+  else if(pct>=10){color=COL.orange;word='Critical';}
+  else{color=COL.red;word='Empty';}
+  return{diff,pct,color,word};
+}
+
+function calcDirection(e){
+  const g=calcGrounding(e),i=calcIntensity(e);
+  const tone=e.tone??5,energyDir=e.size??5,openness=e.openness??5;
+  const hasDetail=e.tone!==undefined;
+  const rhy=e.rhythm;
+
+  // Absolute grounding and intensity levels matter — low on both = contracting
+  const gScore=g>=6?1:g>=4?0:-1;  // healthy=+1, mid=0, low=-1
+  const iScore=i>=4&&i<=7?1:i<4?-1:-0.5; // optimal=+1, low=-1, high=-0.5
+
+  let score=0;
+  if(hasDetail){
+    // Detail inputs: tone, energy direction, openness all contribute
+    score=(tone-5)*1.5+(energyDir-5)*2+(openness-5)*1.5;
+    // Grounding and intensity absolute levels
+    score+=gScore*4+iScore*3;
+  } else {
+    score=gScore*5+iScore*4+(diff=>(diff>2?3:diff>0?1:diff>-2?-1:-3))(g-i);
+  }
+
+  // Rhythm heavily influences direction
+  if(rhy==='flat')score-=5;
+  else if(rhy==='spiky')score-=4;
+  else if(rhy==='choppy')score-=2;
+  else if(rhy==='steady')score+=3;
+
+  const expanding=score>0;
+  return{
+    expanding,
+    label:expanding?'Coherence Spiral':'Dissonance Spiral',
+    icon:expanding?'↑':'↓',
+    color:expanding?'#3a9065':'#9a3050',
+    sub:expanding?'System opening toward coherence':'System contracting toward dissonance',
+    score
+  };
+}
+
+function calcMetabolism(e){
+  const g=calcGrounding(e),i=calcIntensity(e);
+  const safety=e.safety??g;
+  const tone=e.tone??5,energyDir=e.size??5,openness=e.openness??5;
+
+  if(g<=4)return{label:'Low',sub:'metabolism',color:COL.red};
+  if(g<=5)return{label:'Low',sub:'metabolism',color:COL.orange};
+  if(g<=6){
+    const intensityOk=i>=5&&i<=8;
+    return intensityOk
+      ?{label:'Low',sub:'metabolism',color:COL.yellow}
+      :{label:'Low',sub:'metabolism',color:COL.orange};
+  }
+  const intensityOptimal=i>=5&&i<=8?1:i===4||i===9?0.5:0;
+  const qualityScore=(safety+tone+energyDir+openness)/40;
+  const combined=(intensityOptimal*0.4+qualityScore*0.4+(g/10)*0.2);
+  if(combined>=0.85)return{label:'Super',sub:'metabolism',color:COL.blue};
+  if(combined>=0.55)return{label:'Efficient',sub:'metabolism',color:COL.green};
+  if(combined>=0.35)return{label:'Low',sub:'metabolism',color:COL.yellow};
+  if(combined>=0.2)return{label:'Low',sub:'metabolism',color:COL.orange};
+  return{label:'Low',sub:'metabolism',color:COL.red};
+}
+
+function calcIntensityRoute(e){
+  const i=calcIntensity(e),g=calcGrounding(e);
+  const safety=e.safety??g;
+  const rhy=e.rhythm;
+
+  // Assess absolute levels first
+  const gLow=g<5,gHigh=g>=8;
+  const iLow=i<4,iHigh=i>=8;
+  const iWord=iLow?'Low':iHigh?'High':'Optimal';
+  const gWord=gLow?'Low':gHigh?'High':'Healthy';
+
+  // Both low — depleted system
+  if(gLow&&iLow){
+    const blocked=safety<5;
+    if(blocked){
+      return{type:'blocked-low',title:'Low grounding, low intensity — possible block',icon:'◌',
+        text:`Grounding is ${g}/10 (low) and intensity is ${i}/10 (low). Safety is also low — there may be intensity in the system that cannot move. The intervention is to find and remove the block, not add more input.`,
+        actions:['Somatic movement','Name what feels stuck','Change environment','Short body scan']};
+    }
+    return{type:'under-resourced',title:'Low grounding and intensity — under-resourced',icon:'◎',
+      text:`Grounding is ${g}/10 (low) and intensity is ${i}/10 (low). The system is under-stimulated and under-resourced. Gently increase input and tend to grounding first.`,
+      actions:['Gentle movement','Social contact','Eat or hydrate','Novel but low-demand input']};
+  }
+
+  // Low grounding, any intensity — grounding is the priority
+  if(gLow){
+    return{type:'low-grounding',title:`Low grounding (${g}/10) — tend to this first`,icon:'◌',
+      text:`Grounding at ${g}/10 means the system cannot hold whatever intensity is present. Tending to grounding is the first intervention before anything else — intensity adjustments without grounding will not hold.`,
+      actions:['Body-based grounding','Slow breath','Physical stillness','Safe environment','Eat or rest']};
+  }
+
+  // High intensity without enough grounding
+  if(iHigh&&g<7){
+    return{type:'fragmented',title:`High intensity (${i}/10), grounding not keeping pace`,icon:'◈',
+      text:`Intensity is ${i}/10 (high) but grounding is only ${g}/10. This risks nervous system fragmentation. Lower intensity or raise grounding — do not push through.`,
+      actions:['Stop and ground','Physical stillness','Reduce demands','Cold water or breath']};
+  }
+
+  // High intensity, high grounding — well held
+  if(iHigh&&g>=7){
+    return{type:'high-held',title:`High intensity (${i}/10), well grounded`,icon:'〜',
+      text:`Intensity is ${i}/10 but grounding at ${g}/10 is holding it well. Watch duration — even a well-grounded system needs to cycle down. Protect restore time.`,
+      actions:['Schedule restore','Rhythmic movement','Reduce decision load','Breathwork']};
+  }
+
+  // Low intensity, healthy grounding — under-activated
+  if(iLow&&!gLow){
+    return{type:'under-activated',title:`Low intensity (${i}/10) — system under-activated`,icon:'◎',
+      text:`Intensity is ${i}/10 (low) with grounding at ${g}/10. The system has grounding to work with but the signal is weak. Gently increase activation — invite aliveness in.`,
+      actions:['Movement or walk','Social contact','Creative task','Novel sensory input']};
+  }
+
+  // Both in healthy range — only if G≥6 AND I 5-8
+  const cap=calcRemainingCapacity(g,i);
+  if(g>=6&&i>=5&&i<=8){
+    if(cap.pct<35){
+      return{type:'depleted-range',title:`Grounding and intensity in range — capacity low`,icon:'◎',
+        text:`Grounding ${g}/10 (optimal) and intensity ${i}/10 (optimal) are both in range but capacity is low at ${cap.pct}%. Small restore inputs now will protect coherence before it slips.`,
+        actions:['Grounding practice','Brief stillness','Eat or hydrate','Rhythmic breathing']};
+    }
+    return{type:'coherent',title:`Grounding ${g}/10 · Intensity ${i}/10 — coherent`,icon:'✦',
+      text:'Both grounding and intensity are in their optimal ranges. Good conditions for sustained coherent work. Protect this state.',
+      actions:['Stay in rhythm','Protect restore time','Note what created this','Avoid sudden demands']};
+  }
+  // Not in coherent range — name what is off
+  const issues=[];
+  if(g<=5)issues.push(`grounding is low (${g}/10)`);
+  if(i<=4)issues.push(`intensity is low (${i}/10)`);
+  if(i>=9)issues.push(`intensity is high (${i}/10)`);
+  return{type:'out-of-range',title:`Not in coherent range`,icon:'◌',
+    text:`${issues.join(' and ').charAt(0).toUpperCase()+issues.join(' and ').slice(1)}. These conditions do not support sustained coherent work. Tend to what is out of range before engaging demanding tasks.`,
+    actions:g<=5?['Body-based grounding','Slow breath','Physical stillness','Safe environment']:
+      i<=4?['Gentle movement','Social contact','Novel input','Light activation']:
+      ['Reduce demands','Stop and ground','Breathwork','Remove yourself briefly']};
+}
+
+// ── RENDER DASHBOARD ──
+function renderDash(){
+  const latest=entries.length?[...entries].sort((a,b)=>b.ts-a.ts)[0]:null;
+  document.getElementById('dash-no-data').style.display=latest?'none':'block';
+  document.getElementById('dash-data').style.display=latest?'block':'none';
+  if(!latest)return;
+
+  const g=calcGrounding(latest),i=calcIntensity(latest);
+  const cap=calcRemainingCapacity(g,i);
+  const dir=calcDirection(latest);
+  const meta=calcMetabolism(latest);
+  const intRoute=calcIntensityRoute(latest);
+
+  // FELT COHERENCE
+  const fc=document.getElementById('fc-circle');
+  fc.style.background=COL[latest.color]||COL.green;
+  fc.style.borderColor=(COL[latest.color]||COL.green)+'55';
+  document.getElementById('fc-name').textContent=(latest.color||'green').charAt(0).toUpperCase()+(latest.color||'green').slice(1);
+  document.getElementById('fc-meaning').textContent=CM[latest.color]||'';
+
+  // REMAINING CAPACITY GAS GAUGE
+  // 80% of arc = green (right), 20% = yellow sliver (left, near empty)
+  // needle: -90deg=Empty, +90deg=Full
+  const needleAngle=-90+(cap.pct/100)*180;
+  const needle=document.getElementById('cap-needle');
+  if(needle){
+    // SVG-compatible rotation around pivot point (60,90)
+    // translate to pivot, rotate, translate back
+    needle.setAttribute('transform',`rotate(${needleAngle},60,90)`);
+    needle.style.stroke=cap.pct<=22?'#C8B030':'#ffffff';
+  }
+  // Word label — shows Low Fuel warning when in yellow zone
+  const capWordEl=document.getElementById('cap-word');
+  if(cap.pct<=22){
+    capWordEl.textContent='Low fuel';
+    capWordEl.style.color='#C8B030';
+  } else {
+    capWordEl.textContent=cap.word;
+    capWordEl.style.color=cap.color;
+  }
+
+  // INTENSITY VS GROUNDING BARS
+  const gColor=cForV(g),iColor=i>=9?COL.red:i>=5?COL.green:COL.yellow;
+  // Grounding: ≤5=Low, 6-7=Optimal, 8-10=High
+  const gWord=g<=5?'Low':g<=7?'Optimal':'High';
+  const gWordColor=g<=5?COL.yellow:g<=7?COL.green:COL.blue;
+  // Intensity: ≤4=Low, 5-8=Optimal, 9-10=High
+  const iWord=i<=4?'Low':i<=8?'Optimal':'High';
+  const iWordColor=i<=4?COL.yellow:i<=8?COL.green:COL.red;
+  document.getElementById('ig-g-fill').style.width=(g*10)+'%';
+  document.getElementById('ig-g-fill').style.background=gWordColor;
+  document.getElementById('ig-g-val').textContent=g;
+  document.getElementById('ig-g-val').style.color=gWordColor;
+  document.getElementById('ig-g-name').style.color=gWordColor;
+  document.getElementById('ig-g-word').textContent=gWord;
+  document.getElementById('ig-g-word').style.color=gWordColor;
+  document.getElementById('ig-i-fill').style.width=(i*10)+'%';
+  document.getElementById('ig-i-fill').style.background=iWordColor;
+  document.getElementById('ig-i-val').textContent=i;
+  document.getElementById('ig-i-val').style.color=iWordColor;
+  document.getElementById('ig-i-name').style.color=iWordColor;
+  document.getElementById('ig-i-word').textContent=iWord;
+  document.getElementById('ig-i-word').style.color=iWordColor;
+
+  // RHYTHM
+  const rhy=latest.rhythm;
+  if(rhy&&RHY_CONFIG[rhy]){
+    const rc=RHY_CONFIG[rhy];
+    document.getElementById('rhy-word-display').textContent=rhy.charAt(0).toUpperCase()+rhy.slice(1);
+    document.getElementById('rhy-word-display').style.color=rc.color;
+    document.getElementById('rhy-desc').textContent=rc.desc;
+    document.getElementById('rhy-bar').style.width=rc.bar+'%';
+    document.getElementById('rhy-bar').style.background=rc.color;
+  }
+
+  // DIRECTION
+  document.getElementById('dir-icon').textContent=dir.icon;
+  document.getElementById('dir-icon').style.color=dir.color;
+  document.getElementById('dir-word').textContent=dir.label;
+  document.getElementById('dir-word').style.color=dir.color;
+  document.getElementById('dir-sub').textContent=dir.sub;
+
+  // INTENSITY GAUGE — ≤4=Low, 5-8=Optimal, 9-10=High
+  const intWordLabel=i<=4?'Low':i<=8?'Optimal':'High';
+  const intWordColor=i<=4?COL.yellow:i<=8?COL.green:COL.red;
+  document.getElementById('int-number').textContent=i;
+  document.getElementById('int-number').style.color=intWordColor;
+  document.getElementById('int-word').textContent=intWordLabel;
+  document.getElementById('int-word').style.color=intWordColor;
+  document.getElementById('int-bar').style.width=(i*10)+'%';
+  document.getElementById('int-bar').style.background=intWordColor;
+
+  // METABOLISM CIRCLE
+  const mc=document.getElementById('meta-circle');
+  if(mc){mc.style.background=meta.color;mc.style.borderColor=meta.color+'55';}
+  document.getElementById('meta-label').textContent=meta.label;
+  document.getElementById('meta-sub').textContent=meta.sub;
+
+  // INTERVENTION
+  document.getElementById('int-icon').textContent=intRoute.icon;
+  document.getElementById('int-title').textContent=intRoute.title;
+  document.getElementById('int-text').textContent=intRoute.text;
+  document.getElementById('int-actions').innerHTML=intRoute.actions.map(a=>`<div class="int-action">${a}</div>`).join('');
+}
+
+// ── LOG INPUTS ──
+function selColor(c,el){
+  selCol=c;
+  document.querySelectorAll('.cp-circle').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function selRhy(r,el){
+  selRhy_val=r;
+  document.querySelectorAll('.rhy-chip').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function onSimpleSlider(id){
+  const v=+document.getElementById(id+'-sl').value;
+  const isI=id==='si';
+  const c=isI?(v>=8?COL.red:v>=6?COL.orange:v>=4?COL.yellow:COL.blue):cForV(v);
+  document.getElementById(id+'-val').textContent=v;
+  document.getElementById(id+'-val').style.color=c;
+  document.getElementById(id+'-fill').style.width=(v/10*100)+'%';
+  document.getElementById(id+'-fill').style.background=c;
+}
+
+function onDetailSlider(id){
+  const ids={'safety':'safety','presence':'presence','anchoring':'anchoring',
+    'body':'body','mind':'mind','emotional':'emotional',
+    'focus':'focus','tone':'tone','size':'size','open':'open'};
+  const v=+document.getElementById(id+'-sl').value;
+  const iGroup=['body','mind','emotional','si'];
+  const isI=iGroup.includes(id);
+  const c=isI?(v>=8?COL.red:v>=6?COL.orange:v>=4?COL.yellow:COL.blue):
+    id==='focus'?COL.violet:id==='tone'||id==='size'||id==='open'?
+    (v>=7?COL.green:v>=4?COL.yellow:COL.red):cForV(v);
+  document.getElementById(id+'-val').textContent=v;
+  document.getElementById(id+'-val').style.color=c;
+  document.getElementById(id+'-fill').style.width=(v/10*100)+'%';
+  document.getElementById(id+'-fill').style.background=c;
+  // Sync simple sliders from detail
+  if(['safety','presence','anchoring'].includes(id)){
+    const s=+document.getElementById('safety-sl').value;
+    const p=+document.getElementById('presence-sl').value;
+    const a=+document.getElementById('anchoring-sl').value;
+    const avg=Math.round((s+p+a)/3);
+    document.getElementById('sg-sl').value=avg;onSimpleSlider('sg');
+  }
+  if(['body','mind','emotional'].includes(id)){
+    const b=+document.getElementById('body-sl').value;
+    const m=+document.getElementById('mind-sl').value;
+    const em=+document.getElementById('emotional-sl').value;
+    const avg=Math.round((b+m+em)/3);
+    document.getElementById('si-sl').value=avg;onSimpleSlider('si');
+  }
+}
+
+function toggleExpand(){
+  expandOpen=!expandOpen;
+  document.getElementById('expand-panel').classList.toggle('open',expandOpen);
+  document.getElementById('expand-label').textContent=expandOpen?'− Hide detail':'＋ Add deeper detail';
+}
+
+function submitEntry(){
+  const now=new Date(),h=now.getHours(),m=now.getMinutes();
+  const timeStr=(h%12||12)+':'+(String(m).padStart(2,'0'))+(h<12?'am':'pm');
+  const entry={
+    id:entryId++,
+    time:timeStr,
+    hour:h+m/60,
+    ts:Date.now(),
+    color:selCol,
+    grounding:+document.getElementById('sg-sl').value,
+    intensity:+document.getElementById('si-sl').value,
+    rhythm:selRhy_val,
+  };
+  // Add detail if expanded
+  if(expandOpen){
+    entry.safety=+document.getElementById('safety-sl').value;
+    entry.presence=+document.getElementById('presence-sl').value;
+    entry.anchoring=+document.getElementById('anchoring-sl').value;
+    entry.body=+document.getElementById('body-sl').value;
+    entry.mind=+document.getElementById('mind-sl').value;
+    entry.emotional=+document.getElementById('emotional-sl').value;
+    entry.focus=+document.getElementById('focus-sl').value;
+    entry.tone=+document.getElementById('tone-sl').value;
+    entry.size=+document.getElementById('size-sl').value;
+    entry.openness=+document.getElementById('open-sl').value;
+  }
+  entries.push(entry);
+  save('trio3_entries',entries);
+  // Reset
+  selCol='green';selRhy_val=null;
+  document.querySelectorAll('.cp-circle').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('.rhy-chip').forEach(b=>b.classList.remove('sel'));
+  const btn=document.getElementById('submit-btn');
+  btn.textContent='Logged ✓';btn.classList.add('success');
+  setTimeout(()=>{btn.textContent='Log this moment';btn.classList.remove('success');},1400);
+  renderDash();
+  setTab('now');
+}
+
+// ── HISTORY ──
+function renderHistory(){
+  const list=document.getElementById('history-list');
+  if(!entries.length){list.innerHTML='<div class="empty-state">No entries yet.</div>';return;}
+  const today=new Date().toDateString();
+  const byDay={};
+  entries.forEach(e=>{const d=new Date(e.ts).toDateString();if(!byDay[d])byDay[d]=[];byDay[d].push(e);});
+  const days=Object.keys(byDay).sort((a,b)=>new Date(b)-new Date(a));
+  list.innerHTML=days.map(d=>{
+    const lbl=d===today?'Today':d;
+    return`<div class="group-lbl">${lbl}</div>`+
+    [...byDay[d]].sort((a,b)=>b.ts-a.ts).map(e=>{
+      const g=calcGrounding(e),i=calcIntensity(e);
+      const cap=calcRemainingCapacity(g,i);
+      const dir=calcDirection(e);
+      return`<div class="hist-entry">
+        <div class="he-top">
+          <div class="he-dot" style="background:${COL[e.color]||COL.green};"></div>
+          <div class="he-time">${e.time}</div>
+          <div class="he-color" style="color:${COL[e.color]||COL.green};">${e.color||'—'}</div>
+          <div class="he-dir" style="color:${dir.color};">${dir.icon} ${dir.label.split(' ')[0]}</div>
+          <div style="margin-left:6px;font-size:10px;font-weight:600;color:${cap.color};">Cap: ${cap.word}</div>
+          <button class="del-btn" onclick="delEntry(${e.id})">×</button>
+        </div>
+        <div class="he-bars">
+          <div><div class="he-bar-lbl">Ground ${g}</div><div class="he-bar-track"><div class="he-bar-fill" style="width:${g*10}%;background:var(--blue);"></div></div></div>
+          <div><div class="he-bar-lbl">Intensity ${i}</div><div class="he-bar-track"><div class="he-bar-fill" style="width:${i*10}%;background:${i>=8?COL.red:i>=6?COL.orange:i>=4?COL.yellow:COL.blue};"></div></div></div>
+          <div><div class="he-bar-lbl">Rhythm</div><div style="font-size:10px;color:${e.rhythm?RHY_CONFIG[e.rhythm]?.color:COL.txt3};">${e.rhythm||'—'}</div></div>
+        </div>
+      </div>`;
+    }).join('');
+  }).join('')+`<button class="clear-btn" onclick="clearAll()">Clear all</button>`;
+}
+
+function delEntry(id){entries=entries.filter(e=>e.id!==id);save('trio3_entries',entries);renderHistory();renderDash();}
+function clearAll(){if(!confirm('Clear all entries?'))return;entries=[];save('trio3_entries',entries);renderHistory();renderDash();}
+
+// ── GRAPHS ──
+let dirChart=null,capChart=null,giChart=null,fcChart=null;
+
+function renderGraphs(){
+  const sorted=[...entries].sort((a,b)=>a.ts-b.ts);
+  const noData=document.getElementById('graphs-no-data');
+  const content=document.getElementById('graphs-content');
+  if(sorted.length<2){
+    noData.style.display='block';content.style.display='none';return;
+  }
+  noData.style.display='none';content.style.display='block';
+
+  const labels=sorted.map(e=>e.time);
+  const gridCol='rgba(255,255,255,0.04)';
+  const textCol='#55556a';
+
+  // DIRECTION line — score mapped to -10..+10
+  const dirData=sorted.map(e=>calcDirection(e).score);
+  if(dirChart)try{dirChart.destroy();}catch(ex){}
+  dirChart=new Chart(document.getElementById('dir-chart').getContext('2d'),{
+    type:'line',
+    data:{labels,datasets:[{
+      data:dirData,
+      borderColor:dirData.map(v=>v>=0?'#3a9065':'#9a3050'),
+      borderWidth:2,tension:0.4,fill:false,
+      pointBackgroundColor:dirData.map(v=>v>=0?'#3a9065':'#9a3050'),
+      pointRadius:5,pointHoverRadius:7,
+      segment:{borderColor:ctx=>ctx.p0.parsed.y>=0?'#3a9065':'#9a3050'},
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const v=ctx.parsed.y;return v>=0?`↑ Coherence Spiral (${v.toFixed(1)})`:`↓ Dissonance Spiral (${v.toFixed(1)})`;}}}},
+      scales:{
+        x:{grid:{color:gridCol},ticks:{color:textCol,font:{size:9},maxRotation:0},border:{display:false}},
+        y:{grid:{color:gridCol,drawBorder:false},
+          ticks:{color:textCol,font:{size:9},callback:v=>v===0?'threshold':v>0?'↑':'↓'},
+          border:{display:false},
+          afterDataLimits(scale){scale.max=Math.max(scale.max,5);scale.min=Math.min(scale.min,-5);}
+        }
+      }
+    },
+    plugins:[{id:'zeroline',afterDraw(ch){
+      const c=ch.ctx,a=ch.chartArea,ys=ch.scales.y;
+      const y0=ys.getPixelForValue(0);
+      c.save();c.strokeStyle='rgba(255,255,255,0.15)';c.lineWidth=1;c.setLineDash([4,4]);
+      c.beginPath();c.moveTo(a.left,y0);c.lineTo(a.right,y0);c.stroke();c.restore();
+    }}]
+  });
+
+  // CAPACITY line
+  const capData=sorted.map(e=>{const g=calcGrounding(e),i=calcIntensity(e);return g-i;});
+  const capColors=capData.map(v=>v>3?COL.green:v>=0?COL.green:v>=-3?COL.yellow:v>=-7?COL.orange:COL.red);
+  if(capChart)try{capChart.destroy();}catch(ex){}
+  capChart=new Chart(document.getElementById('cap-chart').getContext('2d'),{
+    type:'line',
+    data:{labels,datasets:[{
+      data:capData,borderColor:'rgba(200,200,200,0.3)',borderWidth:1.5,tension:0.4,fill:false,
+      pointBackgroundColor:capColors,pointRadius:5,pointHoverRadius:7,
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y>0?'+':''}${ctx.parsed.y} (${ctx.parsed.y>0?'resourced':'depleted'})`}}},
+      scales:{
+        x:{grid:{color:gridCol},ticks:{color:textCol,font:{size:9},maxRotation:0},border:{display:false}},
+        y:{grid:{color:gridCol},ticks:{color:textCol,font:{size:9},callback:v=>v===0?'0':v},border:{display:false}}
+      }
+    },
+    plugins:[{id:'zl2',afterDraw(ch){
+      const c=ch.ctx,a=ch.chartArea,ys=ch.scales.y;
+      const y0=ys.getPixelForValue(0);
+      c.save();c.strokeStyle='rgba(255,255,255,0.12)';c.lineWidth=1;c.setLineDash([4,4]);
+      c.beginPath();c.moveTo(a.left,y0);c.lineTo(a.right,y0);c.stroke();c.restore();
+    }}]
+  });
+
+  // GROUNDING vs INTENSITY
+  const gData=sorted.map(e=>calcGrounding(e));
+  const iData=sorted.map(e=>calcIntensity(e));
+  if(giChart)try{giChart.destroy();}catch(ex){}
+  giChart=new Chart(document.getElementById('gi-chart').getContext('2d'),{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'Grounding',data:gData,borderColor:COL.blue,borderWidth:2,tension:0.4,fill:false,pointBackgroundColor:COL.blue,pointRadius:4},
+      {label:'Intensity',data:iData,borderColor:COL.orange,borderWidth:2,borderDash:[4,3],tension:0.4,fill:false,pointBackgroundColor:COL.orange,pointRadius:4},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{grid:{color:gridCol},ticks:{color:textCol,font:{size:9},maxRotation:0},border:{display:false}},
+        y:{min:0,max:10,grid:{color:gridCol},ticks:{color:textCol,font:{size:9},stepSize:5},border:{display:false}}
+      }
+    }
+  });
+
+  // FELT COHERENCE dots
+  const FC_NUM={red:1,orange:2,yellow:3,green:6,blue:8,violet:10};
+  const fcData=sorted.map(e=>FC_NUM[e.color]||5);
+  const fcColors=sorted.map(e=>COL[e.color]||COL.green);
+  if(fcChart)try{fcChart.destroy();}catch(ex){}
+  fcChart=new Chart(document.getElementById('fc-chart').getContext('2d'),{
+    type:'line',
+    data:{labels,datasets:[{
+      data:fcData,borderColor:'rgba(200,200,200,0.2)',borderWidth:1,tension:0.3,fill:false,
+      pointBackgroundColor:fcColors,pointRadius:7,pointHoverRadius:9,
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>sorted[ctx.dataIndex].color}}},
+      scales:{
+        x:{grid:{color:gridCol},ticks:{color:textCol,font:{size:9},maxRotation:0},border:{display:false}},
+        y:{min:0,max:10,display:false}
+      }
+    }
+  });
+}
+
+// ── TABS ──
+function setTab(t){
+  ['now','log','graphs','history'].forEach(n=>{
+    const p=document.getElementById('pane-'+n);if(p)p.className='pane'+(n===t?' on':'');
+    const b=document.getElementById('nav-'+n);if(b)b.classList.toggle('on',n===t);
+  });
+  if(t==='now')renderDash();
+  if(t==='graphs'){
+    // init canvas divs
+    ['dir-chart','cap-chart','gi-chart','fc-chart'].forEach(id=>{
+      const cv=document.getElementById(id);
+      if(cv&&!cv.parentElement.hasAttribute('data-init')){
+        const d=document.createElement('div');d.style.cssText='position:relative;height:'+cv.parentElement.style.height+';';
+        d.setAttribute('data-init','1');
+        cv.parentNode.replaceChild(d,cv);d.appendChild(cv);
+      }
+    });
+    renderGraphs();
+  }
+  if(t==='history')renderHistory();
+}
+
+// ── TIME ──
+function updateTime(){
+  const n=new Date(),h=n.getHours(),m=n.getMinutes();
+  document.getElementById('top-time').textContent=(h%12||12)+':'+(String(m).padStart(2,'0'))+(h<12?'am':'pm');
+}
+updateTime();setInterval(updateTime,60000);
+renderDash();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</body>
+</html>
