@@ -1346,7 +1346,7 @@ function renderSchedWave(pts,zone){
   const ctx=cv.getContext('2d');
   const ch=new Chart(ctx,{
     type:'line',
-    data:{labels,datasets:[{label:'wave',data:pts.map(p=>p.e),borderColor:'transparent',backgroundColor:'transparent',pointRadius:0,tension:0.35,fill:false}]},
+    data:{labels,datasets:[{label:'wave',data:pts.map(p=>p.e/10),borderColor:'transparent',backgroundColor:'transparent',pointRadius:0,tension:0.35,fill:false}]},
     options:{responsive:true,maintainAspectRatio:false,animation:{duration:200},
       interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false},tooltip:{enabled:false,external(ctx2){
@@ -1363,14 +1363,14 @@ function renderSchedWave(pts,zone){
           `<div style="color:${inS?'#4A9E6A':'#C05060'}">${inS?'in zone':'below floor'}</div>`;
       }}},
       scales:{
-        x:{grid:{color:'rgba(255,255,255,0.04)',lineWidth:0.5},ticks:{color:'var(--txt3)',font:{size:9},maxRotation:0,callback:(v,i)=>labels[i]||''},border:{display:false}},
-        y:{min:0,max:100,grid:{color:'rgba(255,255,255,0.04)',lineWidth:0.5},ticks:{color:'var(--txt3)',font:{size:9},stepSize:25,callback:v=>v===0?'':v===100?'peak':''},border:{display:false}}
+        x:{grid:{color:'rgba(255,255,255,0.04)',lineWidth:0.5},ticks:{color:'#55556a',font:{size:9},maxRotation:0,callback:(v,i)=>labels[i]||''},border:{display:false},title:{display:true,text:'Time of day',color:'#55556a',font:{size:10}}},
+        y:{min:0,max:10,grid:{color:'rgba(255,255,255,0.04)',lineWidth:0.5},ticks:{color:'#55556a',font:{size:9},stepSize:1},border:{display:false},title:{display:true,text:'Coherence score (0–10)',color:'#55556a',font:{size:10}}}
       }
     },
     plugins:[{id:'schedZone',
       beforeDraw(ch){
         const c=ch.ctx,a=ch.chartArea,ys=ch.scales.y;
-        const fY=ys.getPixelForValue(zone.floor),cY=ys.getPixelForValue(zone.ceiling),pY=ys.getPixelForValue(zone.peak);
+        const fY=ys.getPixelForValue(zone.floor/10),cY=ys.getPixelForValue(zone.ceiling/10),pY=ys.getPixelForValue(zone.peak/10);
         c.save();
         c.fillStyle='rgba(42,142,142,0.09)';c.fillRect(a.left,cY,a.right-a.left,fY-cY);
         c.fillStyle='rgba(200,176,48,0.05)';c.fillRect(a.left,pY,a.right-a.left,cY-pY);
