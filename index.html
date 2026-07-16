@@ -181,13 +181,19 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px;cursor:pointer
 /* ACTIVITIES TAB */
 .activity-tile{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:13px 14px;margin-bottom:10px;}
 .activity-tile-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.tile-edit-btn{background:transparent;border:0.5px solid var(--border2);color:var(--txt3);border-radius:7px;padding:2px 7px;font-size:11px;cursor:pointer;font-family:inherit;}
 .activity-tile-name{font-size:13px;font-weight:700;}
 .activity-tile-timing{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--txt3);padding:3px 8px;border:0.5px solid var(--border2);border-radius:8px;}
-.activity-tile-count{font-size:10px;color:var(--txt3);margin-bottom:10px;}
+.activity-tile-count{font-size:10px;color:var(--txt3);margin-bottom:10px;cursor:pointer;text-decoration:underline;text-decoration-style:dotted;width:fit-content;}
+.activity-detail{margin-top:2px;margin-bottom:10px;padding-top:8px;border-top:0.5px solid var(--border);display:flex;flex-direction:column;gap:8px;}
+.act-detail-row{font-size:11px;}
+.act-detail-top{display:flex;align-items:center;gap:7px;}
+.act-detail-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.act-detail-time{color:var(--txt3);font-size:10px;}
+.act-detail-color{font-weight:700;}
+.act-detail-notes{color:var(--txt2);margin-top:2px;margin-left:15px;line-height:1.5;}
 .act-bar-lbl{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--txt3);margin-bottom:5px;}
 .act-color-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--bg4);margin-bottom:10px;}
-.act-dir-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--bg4);}
-.act-dir-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--txt3);margin-top:5px;}
 
 /* SCHEDULE TAB */
 .sched-chip{display:flex;align-items:center;gap:6px;}
@@ -198,21 +204,32 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px;cursor:pointer
 .cpp-swatch{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
 .cpp-swatch.cpp-auto{background:var(--bg4);border:1px dashed var(--border2);font-size:8px;color:var(--txt3);display:flex;align-items:center;justify-content:center;}
 .cpp-close{width:100%;padding:8px;border-radius:10px;background:var(--txt);color:var(--bg);border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
-.sched-graph-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:12px;margin-top:12px;}
-.sched-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px;}
-.sched-inner{position:relative;height:170px;}
-.sched-line-svg{position:absolute;top:0;left:0;height:80px;}
-.sched-hours{position:relative;height:16px;}
-.sched-hour-tick{position:absolute;font-size:8px;color:var(--txt3);top:0;transform:translateX(-50%);white-space:nowrap;}
-.sched-timeline{position:relative;height:54px;margin-top:4px;background:var(--bg4);border-radius:8px;}
-.sched-block{position:absolute;top:4px;bottom:4px;border-radius:8px;display:flex;align-items:center;padding:0 8px;font-size:10px;font-weight:700;color:#fff;overflow:hidden;white-space:nowrap;cursor:grab;box-shadow:0 1px 4px rgba(0,0,0,0.3);touch-action:none;}
-.sched-block-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;text-shadow:0 1px 2px rgba(0,0,0,0.4);}
-.sched-block-del{margin-left:4px;cursor:pointer;font-size:12px;opacity:0.85;}
-.sched-block-resize{position:absolute;right:0;top:0;bottom:0;width:12px;cursor:ew-resize;}
+.wave-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:12px;margin-top:12px;}
+.wave-box{position:relative;height:190px;margin-bottom:5px;}
+.wave-tip{position:absolute;background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;padding:7px 11px;font-size:11px;pointer-events:none;opacity:0;transition:opacity .12s;z-index:20;min-width:140px;line-height:1.8;color:var(--txt);}
+.seq-hint{font-size:9px;color:var(--txt3);margin-bottom:8px;}
+.seq-list{display:flex;flex-direction:column;gap:4px;}
+.sc{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;border:0.5px solid var(--border);background:var(--bg3);cursor:grab;user-select:none;font-size:12px;position:relative;}
+.sc:active{opacity:.6;cursor:grabbing;}
+.sc.drag-over{border-color:var(--border2);background:var(--bg4);}
+.sc-handle{color:var(--txt3);font-size:12px;flex-shrink:0;}
+.sc-cbar{width:4px;height:28px;border-radius:2px;flex-shrink:0;cursor:pointer;transition:transform .12s;}
+.sc-cbar:hover{transform:scaleX(2);}
+.sc-cpick{display:none;position:absolute;left:22px;top:50%;transform:translateY(-50%);background:var(--bg4);border:0.5px solid var(--border2);border-radius:8px;padding:5px 7px;z-index:30;gap:5px;align-items:center;}
+.sc-cpick.open{display:flex;}
+.sc-cp{width:14px;height:14px;border-radius:50%;cursor:pointer;flex-shrink:0;transition:transform .12s;}
+.sc-cp:hover{transform:scale(1.3);}
+.sc-name{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sc-recoded{font-size:9px;margin-left:5px;}
+.sc-dur{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+.sc-dur-btn{width:20px;height:20px;border-radius:6px;border:0.5px solid var(--border2);background:transparent;color:var(--txt3);font-size:12px;cursor:pointer;font-family:inherit;line-height:1;}
+.sc-dur-val{font-size:10px;color:var(--txt2);min-width:30px;text-align:center;}
+.sc-del{color:var(--txt3);font-size:13px;cursor:pointer;flex-shrink:0;padding:0 2px;}
 .sched-empty{text-align:center;color:var(--txt3);font-size:12px;padding:20px 10px;}
 </style>
 </head>
 <body>
+
 <div class="app">
 
 <!-- TOP BAR -->
@@ -609,10 +626,17 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px;cursor:pointer
   </div>
   <div id="graphs-content">
 
-    <!-- DIRECTION OVER TIME -->
+    <!-- DIRECTION -->
     <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;">
-      <div style="font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:4px;">Direction over time</div>
-      <div style="font-size:11px;color:var(--txt2);margin-bottom:10px;">Above midline = Coherence Spiral · Below = Dissonance Spiral</div>
+      <div style="font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:4px;">Direction</div>
+      <div style="font-size:11px;color:var(--txt2);margin-bottom:10px;">Was each entry classified Upward or Downward</div>
+      <div style="position:relative;height:100px;"><canvas id="updown-chart"></canvas></div>
+    </div>
+
+    <!-- COHERENCE TRAJECTORY -->
+    <div style="background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:10px;">
+      <div style="font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-bottom:4px;">Coherence trajectory</div>
+      <div style="font-size:11px;color:var(--txt2);margin-bottom:10px;">Green = rising since last entry · Red = falling since last entry</div>
       <div style="position:relative;height:140px;"><canvas id="dir-chart"></canvas></div>
     </div>
 
@@ -648,6 +672,15 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px;cursor:pointer
     No activities logged yet.<br>Add one from the <strong>＋ Log</strong> screen to see correlations here.
   </div>
   <div id="activities-list"></div>
+
+  <div id="activity-edit-popup" class="color-picker-popup" style="display:none;">
+    <div class="cpp-title" id="aep-title">Edit activity</div>
+    <input type="text" id="aep-input" class="activity-input" style="width:100%;margin-bottom:10px;box-sizing:border-box;" placeholder="Activity name">
+    <div id="aep-merge-hint" style="font-size:10px;color:var(--txt3);margin-bottom:8px;line-height:1.5;"></div>
+    <div id="aep-merge-list" class="activity-grid" style="margin-bottom:12px;"></div>
+    <button class="cpp-close" onclick="saveActivityEdit()">Save</button>
+    <button class="cpp-close" style="background:transparent;color:var(--txt3);border:0.5px solid var(--border2);margin-top:6px;" onclick="closeActivityEdit()">Cancel</button>
+  </div>
 </div>
 
 <!-- ── SCHEDULE ── -->
@@ -676,15 +709,11 @@ input[type=range]{width:100%;accent-color:var(--blue);height:22px;cursor:pointer
     <button class="cpp-close" onclick="closeColorPicker()">Done</button>
   </div>
 
-  <div class="sched-graph-card">
-    <div class="log-section-title">Projected coherence across your day</div>
-    <div class="sched-scroll" id="sched-scroll">
-      <div class="sched-inner" id="sched-inner">
-        <svg id="sched-line-svg" class="sched-line-svg"></svg>
-        <div class="sched-hours" id="sched-hours"></div>
-        <div class="sched-timeline" id="sched-timeline"></div>
-      </div>
-    </div>
+  <div class="wave-card">
+    <div class="log-section-title">Predicted wave</div>
+    <div class="wave-box"><canvas id="schedWave"></canvas><div class="wave-tip" id="schedTip"></div></div>
+    <div class="seq-hint">tap color bar to recode &middot; drag to reorder</div>
+    <div class="seq-list" id="sched-seq"></div>
   </div>
 
   <button class="clear-btn" onclick="clearSchedule()">Clear schedule</button>
@@ -713,6 +742,7 @@ const cForV=v=>v>=8?COL.blue:v>=6?COL.green:v>=4?COL.yellow:COL.red;
 
 function load(k,d){try{return JSON.parse(localStorage.getItem(k)||'null')||d;}catch(e){return d;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function attrStr(s){return JSON.stringify(s).replace(/"/g,'&quot;');}
 
 let entries=load('trio3_entries',[]);
 let entryId=entries.length?Math.max(...entries.map(e=>e.id),0)+1:1;
@@ -726,8 +756,9 @@ let selActivity=null,selTimingVal=null,selCategoryVal=null,selDepthVal=null,selD
 let activityColors=load('trio3_activity_colors',{});
 let schedule=load('trio3_schedule',[]);
 let scheduleId=schedule.length?Math.max(...schedule.map(b=>b.id),0)+1:1;
-const SCHED_START_HOUR=6,SCHED_END_HOUR=23,PX_PER_MIN=2,SNAP_MIN=15;
-let colorPickerTarget=null,dragState=null;
+let colorPickerTarget=null,openPick=null,dragId=null,schedCh=null;
+const SCHED_EDELTA={red:-22,orange:-14,yellow:-7,green:1,blue:10,violet:15};
+const SCHED_SAFE_MIN=40,SCHED_SAFE_MAX=82,SCHED_PEAK=90,SCHED_STEP=0.1,SCHED_DAY_S=7;
 
 // ── CALCULATIONS ──
 function calcGrounding(e){
@@ -779,7 +810,7 @@ function calcDirection(e){
 
   // Absolute grounding and intensity levels matter — low on both = contracting
   const gScore=g>=6?1:g>=4?0:-1;  // healthy=+1, mid=0, low=-1
-  const iScore=i>=4&&i<=7?1:i<4?-1:-0.5; // optimal=+1, low=-1, high=-0.5
+  const iScore=i>=5&&i<=8?1:i<5?-1:-0.5; // optimal=+1, low=-1, high=-0.5
 
   let score=0;
   if(hasDetail){
@@ -800,7 +831,7 @@ function calcDirection(e){
   const expanding=score>0;
   return{
     expanding,
-    label:expanding?'Coherence Spiral':'Dissonance Spiral',
+    label:expanding?'Upward':'Downward',
     icon:expanding?'↑':'↓',
     color:expanding?'#3a9065':'#9a3050',
     sub:expanding?'System opening toward coherence':'System contracting toward dissonance',
@@ -1077,7 +1108,7 @@ function renderActivityButtons(){
   const wrap=document.getElementById('activity-buttons');
   if(!wrap)return;
   wrap.innerHTML=customActivities.map(name=>
-    `<button class="activity-chip${name===selActivity?' sel':''}" onclick="selActivityFn(${JSON.stringify(name)},this)">${name}</button>`
+    `<button class="activity-chip${name===selActivity?' sel':''}" onclick="selActivityFn(${attrStr(name)},this)">${name}</button>`
   ).join('')+`<button class="activity-add-chip" onclick="toggleActivityAdd()">＋ Add</button>`;
 }
 
@@ -1192,8 +1223,8 @@ function renderScheduleButtons(){
   if(!wrap)return;
   wrap.innerHTML=customActivities.map(name=>{
     const c=getActivityColor(name);
-    return `<button class="activity-chip sched-chip" onclick="addToSchedule(${JSON.stringify(name)})">`+
-      `<span class="sched-chip-dot" style="background:${c};" onclick="event.stopPropagation();openColorPicker(${JSON.stringify(name)})"></span>${name}`+
+    return `<button class="activity-chip sched-chip" onclick="addToSchedule(${attrStr(name)})">`+
+      `<span class="sched-chip-dot" style="background:${c};" onclick="event.stopPropagation();openColorPicker(${attrStr(name)})"></span>${name}`+
       `</button>`;
   }).join('')+`<button class="activity-add-chip" onclick="toggleScheduleActivityAdd()">＋ Add</button>`;
 }
@@ -1219,7 +1250,7 @@ function confirmAddScheduleActivity(){
   document.getElementById('sched-activity-add-row').style.display='none';
   renderActivityButtons();
   renderScheduleButtons();
-  addToSchedule(name);
+  openColorPicker(name);
 }
 
 function openColorPicker(name){
@@ -1244,8 +1275,8 @@ function setActivityColor(colorKey){
 }
 
 function addToSchedule(name){
-  const lastEnd=schedule.length?Math.max(...schedule.map(b=>b.start+b.duration)):0;
-  schedule.push({id:scheduleId++,activity:name,start:lastEnd,duration:30});
+  const key=getActivityColorKey(name)||'green';
+  schedule.push({id:scheduleId++,activity:name,duration:30,color:key,orig:key});
   save('trio3_schedule',schedule);
   renderSchedule();
 }
@@ -1263,93 +1294,179 @@ function clearSchedule(){
   renderSchedule();
 }
 
-function renderSchedule(){
-  const timeline=document.getElementById('sched-timeline');
-  const hoursEl=document.getElementById('sched-hours');
-  const svg=document.getElementById('sched-line-svg');
-  const inner=document.getElementById('sched-inner');
-  if(!timeline)return;
-
-  const windowMin=(SCHED_END_HOUR-SCHED_START_HOUR)*60;
-  const lastEnd=schedule.length?Math.max(...schedule.map(b=>b.start+b.duration)):0;
-  const totalMin=Math.max(windowMin,lastEnd);
-  const widthPx=totalMin*PX_PER_MIN;
-  inner.style.width=widthPx+'px';
-  timeline.style.width=widthPx+'px';
-  svg.setAttribute('width',widthPx);
-  svg.setAttribute('viewBox',`0 0 ${widthPx} 80`);
-
-  let hoursHtml='';
-  for(let h=SCHED_START_HOUR;h<=SCHED_END_HOUR;h++){
-    const x=(h-SCHED_START_HOUR)*60*PX_PER_MIN;
-    const label=(h%12||12)+(h<12?'am':'pm');
-    hoursHtml+=`<div class="sched-hour-tick" style="left:${x}px;">${label}</div>`;
-  }
-  hoursEl.style.width=widthPx+'px';
-  hoursEl.innerHTML=hoursHtml;
-
-  if(!schedule.length){
-    timeline.innerHTML='<div class="sched-empty">Tap an activity above to add it to your day</div>';
-    svg.innerHTML='';
-    return;
-  }
-
-  timeline.innerHTML=schedule.map(b=>{
-    const color=getActivityColor(b.activity);
-    return `<div class="sched-block" style="left:${b.start*PX_PER_MIN}px;width:${b.duration*PX_PER_MIN}px;background:${color};" data-id="${b.id}" onpointerdown="startDrag(event,${b.id},'move')">`+
-      `<span class="sched-block-label">${b.activity}</span>`+
-      `<span class="sched-block-del" onclick="event.stopPropagation();removeScheduleBlock(${b.id})">×</span>`+
-      `<span class="sched-block-resize" onpointerdown="event.stopPropagation();startDrag(event,${b.id},'resize')"></span>`+
-      `</div>`;
-  }).join('');
-
-  const sorted=[...schedule].sort((a,b)=>a.start-b.start);
-  const yTop=8,yBottom=72;
-  const valFor=b=>FC_NUM[getActivityColorKey(b.activity)||'green']||5;
-  const yFor=v=>yBottom-((v-1)/9)*(yBottom-yTop);
-  let path='',dots='';
-  sorted.forEach((b,idx)=>{
-    const v=valFor(b),y=yFor(v);
-    const x1=b.start*PX_PER_MIN,x2=(b.start+b.duration)*PX_PER_MIN;
-    const color=getActivityColor(b.activity);
-    if(idx===0||sorted[idx-1].start+sorted[idx-1].duration<b.start){
-      path+=`M ${x1} ${y} L ${x2} ${y} `;
-    } else {
-      path+=`L ${x1} ${y} L ${x2} ${y} `;
-    }
-    dots+=`<circle cx="${(x1+x2)/2}" cy="${y}" r="4" fill="${color}"/>`;
-  });
-  svg.innerHTML=`<path d="${path}" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>${dots}`;
-}
-
-function startDrag(ev,id,mode){
-  ev.preventDefault();
-  const block=schedule.find(b=>b.id===id);
-  if(!block)return;
-  dragState={id,mode,startX:ev.clientX,origStart:block.start,origDuration:block.duration};
-  document.addEventListener('pointermove',onDragMove);
-  document.addEventListener('pointerup',onDragEnd);
-}
-
-function onDragMove(ev){
-  if(!dragState)return;
-  const deltaPx=ev.clientX-dragState.startX;
-  const deltaMin=Math.round((deltaPx/PX_PER_MIN)/SNAP_MIN)*SNAP_MIN;
-  const block=schedule.find(b=>b.id===dragState.id);
-  if(!block)return;
-  if(dragState.mode==='move'){
-    block.start=Math.max(0,dragState.origStart+deltaMin);
-  } else {
-    block.duration=Math.max(SNAP_MIN,dragState.origDuration+deltaMin);
-  }
+function adjustDuration(id,delta){
+  const b=schedule.find(x=>x.id===id);
+  if(!b)return;
+  b.duration=Math.max(15,b.duration+delta);
+  save('trio3_schedule',schedule);
   renderSchedule();
 }
 
-function onDragEnd(){
-  document.removeEventListener('pointermove',onDragMove);
-  document.removeEventListener('pointerup',onDragEnd);
-  dragState=null;
+function computeLiveZone(){
+  if(!entries.length)return{floor:SCHED_SAFE_MIN,ceiling:SCHED_SAFE_MAX,peak:SCHED_PEAK};
+  const todayStr=new Date().toDateString();
+  const todays=entries.filter(e=>e.ts&&new Date(e.ts).toDateString()===todayStr);
+  const pool=todays.length?todays:entries.slice(-5);
+  const avg=k=>pool.reduce((s,e)=>s+(typeof e[k]==='number'?e[k]:5),0)/pool.length;
+  const g=avg('grounding'),i=avg('intensity');
+  const rVals=pool.map(e=>e.rhythm&&RHY_CONFIG[e.rhythm]?RHY_CONFIG[e.rhythm].bar/10:5.5);
+  const r=rVals.reduce((a,b)=>a+b,0)/rVals.length;
+  const w=Math.max(12,30+(g-5)*3.2+(r-5)*2-(i-5)*2.5);
+  const mid=50+(g-5)*1.5-(i-5)*2;
+  return{
+    floor:Math.round(Math.max(8,mid-w/2)),
+    ceiling:Math.round(Math.min(96,mid+w/2)),
+    peak:Math.round(Math.min(96,mid+w/2+4))
+  };
+}
+
+function buildSchedPts(zone){
+  const pts=[];
+  let e=Math.min(zone.ceiling,Math.max(zone.floor+5,60)),t=SCHED_DAY_S;
+  schedule.forEach(b=>{
+    const n=Math.max(1,Math.round(b.duration/6));
+    for(let j=0;j<n;j++){
+      e=Math.min(100,Math.max(4,e+(SCHED_EDELTA[b.color]||0)*SCHED_STEP));
+      pts.push({e:+e.toFixed(1),color:b.color,name:b.activity,t:+t.toFixed(2)});
+      t+=SCHED_STEP;
+    }
+  });
+  return pts;
+}
+
+function renderSchedWave(pts,zone){
+  if(schedCh)try{schedCh.destroy();}catch(e){}
+  const cv=document.getElementById('schedWave');
+  if(!cv)return;
+  if(!pts.length){
+    const ctx0=cv.getContext('2d');ctx0.clearRect(0,0,cv.width,cv.height);
+    schedCh=null;return;
+  }
+  const labels=pts.map((_,i)=>i%10===0?(h=>h<12?h+'am':h===12?'12pm':(h-12)+'pm')(Math.floor(SCHED_DAY_S+i*SCHED_STEP)):'');
+  const ctx=cv.getContext('2d');
+  const ch=new Chart(ctx,{
+    type:'line',
+    data:{labels,datasets:[{label:'wave',data:pts.map(p=>p.e),borderColor:'transparent',backgroundColor:'transparent',pointRadius:0,tension:0.35,fill:false}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:200},
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{enabled:false,external(ctx2){
+        const tip=document.getElementById('schedTip');
+        if(ctx2.tooltip.opacity===0){tip.style.opacity='0';return;}
+        const i=ctx2.tooltip.dataPoints[0].dataIndex,p=pts[i];
+        if(!p||!p.color){tip.style.opacity='0';return;}
+        tip.style.opacity='1';
+        tip.style.left=Math.min(ctx2.tooltip.caretX+9,175)+'px';
+        tip.style.top=Math.max(0,ctx2.tooltip.caretY-18)+'px';
+        const inS=p.e>=zone.floor&&p.e<=zone.ceiling;
+        tip.innerHTML=`<div style="font-weight:700;margin-bottom:1px;">${p.name||'—'}</div>`+
+          `<div>coherence: <span style="color:${COL[p.color]}">${p.color}</span></div>`+
+          `<div style="color:${inS?'#4A9E6A':'#C05060'}">${inS?'in zone':'below floor'}</div>`;
+      }}},
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.04)',lineWidth:0.5},ticks:{color:'var(--txt3)',font:{size:9},maxRotation:0,callback:(v,i)=>labels[i]||''},border:{display:false}},
+        y:{min:0,max:100,grid:{color:'rgba(255,255,255,0.04)',lineWidth:0.5},ticks:{color:'var(--txt3)',font:{size:9},stepSize:25,callback:v=>v===0?'':v===100?'peak':''},border:{display:false}}
+      }
+    },
+    plugins:[{id:'schedZone',
+      beforeDraw(ch){
+        const c=ch.ctx,a=ch.chartArea,ys=ch.scales.y;
+        const fY=ys.getPixelForValue(zone.floor),cY=ys.getPixelForValue(zone.ceiling),pY=ys.getPixelForValue(zone.peak);
+        c.save();
+        c.fillStyle='rgba(42,142,142,0.09)';c.fillRect(a.left,cY,a.right-a.left,fY-cY);
+        c.fillStyle='rgba(200,176,48,0.05)';c.fillRect(a.left,pY,a.right-a.left,cY-pY);
+        c.restore();
+      },
+      afterDraw(ch){
+        const meta=ch.getDatasetMeta(0),c=ch.ctx;
+        c.save();
+        for(let i=1;i<pts.length;i++){
+          const p=pts[i-1],q=pts[i];if(!p.color&&!q.color)continue;
+          const col=p.color?COL[p.color]:'rgba(100,100,100,0.2)';
+          const x1=meta.data[i-1]?.x,y1=meta.data[i-1]?.y,x2=meta.data[i]?.x,y2=meta.data[i]?.y;
+          if(x1==null||x2==null)continue;
+          c.beginPath();c.moveTo(x1,y1);c.bezierCurveTo((x1+x2)/2,y1,(x1+x2)/2,y2,x2,y2);
+          c.strokeStyle=col;c.lineWidth=2.2;c.lineCap='round';c.globalAlpha=0.85;c.stroke();
+        }
+        c.restore();
+      }
+    }]
+  });
+  schedCh=ch;
+}
+
+function renderSchedSeq(){
+  const list=document.getElementById('sched-seq');
+  if(!list)return;
+  if(!schedule.length){
+    list.innerHTML='<div class="sched-empty">Tap an activity above to add it to your day</div>';
+    return;
+  }
+  list.innerHTML='';
+  schedule.forEach(b=>{
+    const card=document.createElement('div');
+    card.className='sc';
+    card.draggable=true;
+    card.dataset.id=b.id;
+    card.innerHTML=`
+      <span class="sc-handle">⠿</span>
+      <div class="sc-cbar" style="background:${COL[b.color]};" onclick="toggleSeqPick(event,${b.id})"></div>
+      <div class="sc-cpick" id="sc-cp-${b.id}">
+        ${['red','orange','yellow','green','blue','violet'].map(c=>`<div class="sc-cp" style="background:${COL[c]};" onclick="recodeSeq(${b.id},'${c}',event)"></div>`).join('')}
+      </div>
+      <div class="sc-name">${b.activity}${b.color!==b.orig?`<span class="sc-recoded" style="color:${COL[b.color]};">(recoded)</span>`:''}</div>
+      <div class="sc-dur">
+        <button class="sc-dur-btn" onclick="adjustDuration(${b.id},-15)">−</button>
+        <span class="sc-dur-val">${b.duration}m</span>
+        <button class="sc-dur-btn" onclick="adjustDuration(${b.id},15)">+</button>
+      </div>
+      <span class="sc-del" onclick="removeScheduleBlock(${b.id})">×</span>`;
+    card.addEventListener('dragstart',()=>{dragId=b.id;card.classList.add('dragging');});
+    card.addEventListener('dragend',()=>card.classList.remove('dragging'));
+    card.addEventListener('dragover',e=>{e.preventDefault();card.classList.add('drag-over');});
+    card.addEventListener('dragleave',()=>card.classList.remove('drag-over'));
+    card.addEventListener('drop',e=>{
+      e.preventDefault();card.classList.remove('drag-over');
+      if(dragId==null||dragId===b.id)return;
+      const fi=schedule.findIndex(x=>x.id===dragId),ti=schedule.findIndex(x=>x.id===b.id);
+      if(fi<0||ti<0)return;
+      const moved=schedule.splice(fi,1)[0];
+      schedule.splice(schedule.findIndex(x=>x.id===b.id),0,moved);
+      dragId=null;
+      save('trio3_schedule',schedule);
+      renderSchedule();
+    });
+    list.appendChild(card);
+  });
+}
+
+function toggleSeqPick(e,id){
+  e.stopPropagation();
+  const key='sc-cp-'+id;
+  if(openPick&&openPick!==key){const p=document.getElementById(openPick);if(p)p.classList.remove('open');}
+  const cp=document.getElementById(key);cp.classList.toggle('open');
+  openPick=cp.classList.contains('open')?key:null;
+}
+
+function recodeSeq(id,color,e){
+  e.stopPropagation();
+  const b=schedule.find(x=>x.id===id);
+  if(b)b.color=color;
+  if(openPick){const p=document.getElementById(openPick);if(p)p.classList.remove('open');}
+  openPick=null;
   save('trio3_schedule',schedule);
+  renderSchedule();
+}
+
+document.addEventListener('click',()=>{
+  if(openPick){const p=document.getElementById(openPick);if(p)p.classList.remove('open');}
+  openPick=null;
+});
+
+function renderSchedule(){
+  if(!document.getElementById('sched-seq'))return;
+  renderSchedSeq();
+  const zone=computeLiveZone();
+  renderSchedWave(buildSchedPts(zone),zone);
 }
 
 function submitEntry(){
@@ -1420,7 +1537,7 @@ function renderHistory(){
           <div class="he-dot" style="background:${COL[e.color]||COL.green};"></div>
           <div class="he-time">${e.time}</div>
           <div class="he-color" style="color:${COL[e.color]||COL.green};">${e.color||'—'}</div>
-          <div class="he-dir" style="color:${dir.color};">${dir.icon} ${dir.label.split(' ')[0]}</div>
+          <div class="he-dir" style="color:${dir.color};">${dir.icon} ${dir.label}</div>
           <div style="margin-left:6px;font-size:10px;font-weight:600;color:${cap.color};">Cap: ${cap.word}</div>
           <button class="del-btn" onclick="delEntry(${e.id})">×</button>
         </div>
@@ -1451,17 +1568,23 @@ function renderActivities(){
     if(!groups[e.activity])groups[e.activity]={during:[],after:[]};
     groups[e.activity][timing].push(e);
   });
-  let html='';
+  let html='',idx=0;
   Object.keys(groups).sort().forEach(name=>{
     ['during','after'].forEach(timing=>{
       const l=groups[name][timing];
-      if(l.length)html+=renderActivityTile(name,timing,l);
+      if(l.length){html+=renderActivityTile(name,timing,l,idx);idx++;}
     });
   });
   list.innerHTML=html;
 }
 
-function renderActivityTile(name,timing,list){
+function toggleActivityDetail(idx){
+  const el=document.getElementById('activity-detail-'+idx);
+  if(!el)return;
+  el.style.display=el.style.display==='none'?'flex':'none';
+}
+
+function renderActivityTile(name,timing,list,idx){
   const total=list.length;
   const counts={red:0,orange:0,yellow:0,green:0,blue:0,violet:0};
   list.forEach(e=>{const c=e.color||'green';counts[c]=(counts[c]||0)+1;});
@@ -1469,31 +1592,90 @@ function renderActivityTile(name,timing,list){
     const pct=Math.round(counts[c]/total*100);
     return `<div style="width:${pct}%;background:${COL[c]};" title="${c} ${pct}%"></div>`;
   }).join('');
-  const upCount=list.filter(e=>calcDirection(e).expanding).length;
-  const upPct=Math.round(upCount/total*100);
-  const downPct=100-upPct;
+  const sorted=[...list].sort((a,b)=>(b.ts||0)-(a.ts||0));
+  const detailRows=sorted.map(e=>{
+    const c=e.color||'green';
+    const dateStr=e.ts?new Date(e.ts).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'—';
+    return `<div class="act-detail-row">
+      <div class="act-detail-top">
+        <span class="act-detail-dot" style="background:${COL[c]};"></span>
+        <span class="act-detail-time">${dateStr}</span>
+        <span class="act-detail-color" style="color:${COL[c]};">${c}</span>
+      </div>
+      ${e.notes?`<div class="act-detail-notes">${e.notes}</div>`:''}
+    </div>`;
+  }).join('');
   return `<div class="activity-tile">
     <div class="activity-tile-top">
       <div class="activity-tile-name">${name}</div>
-      <div class="activity-tile-timing">${timing==='during'?'During':'After'}</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button class="tile-edit-btn" onclick="openActivityEdit(${attrStr(name)})">✎ Edit</button>
+        <div class="activity-tile-timing">${timing==='during'?'During':'After'}</div>
+      </div>
     </div>
-    <div class="activity-tile-count">${total} log${total===1?'':'s'}</div>
+    <div class="activity-tile-count" onclick="toggleActivityDetail(${idx})">${total} log${total===1?'':'s'} &darr;</div>
+    <div class="activity-detail" id="activity-detail-${idx}" style="display:none;">${detailRows}</div>
     <div class="act-bar-lbl">Felt Coherence distribution</div>
     <div class="act-color-bar">${segments}</div>
-    <div class="act-bar-lbl">Spiral direction</div>
-    <div class="act-dir-bar">
-      <div style="width:${upPct}%;background:#3a9065;"></div>
-      <div style="width:${downPct}%;background:#9a3050;"></div>
-    </div>
-    <div class="act-dir-labels"><span>↑ ${upPct}% Coherence</span><span>↓ ${downPct}% Dissonance</span></div>
   </div>`;
 }
 
 function delEntry(id){entries=entries.filter(e=>e.id!==id);save('trio3_entries',entries);renderHistory();renderDash();}
+
+// ── EDIT / MERGE ACTIVITIES ──
+let editActivityTarget=null;
+
+function openActivityEdit(name){
+  editActivityTarget=name;
+  document.getElementById('aep-title').textContent='Edit "'+name+'"';
+  const input=document.getElementById('aep-input');
+  input.value=name;
+  const others=customActivities.filter(n=>n!==name);
+  const mergeList=document.getElementById('aep-merge-list');
+  mergeList.innerHTML=others.map(n=>
+    `<button class="activity-chip" onclick="document.getElementById('aep-input').value=${attrStr(n)}">${n}</button>`
+  ).join('');
+  document.getElementById('aep-merge-hint').textContent=others.length
+    ? 'Type a new name to rename, or tap an existing activity below to merge into it.'
+    : 'Type a new name to rename this activity.';
+  document.getElementById('activity-edit-popup').style.display='block';
+}
+
+function closeActivityEdit(){
+  document.getElementById('activity-edit-popup').style.display='none';
+  editActivityTarget=null;
+}
+
+function saveActivityEdit(){
+  const newName=document.getElementById('aep-input').value.trim();
+  if(!editActivityTarget||!newName){closeActivityEdit();return;}
+  renameActivity(editActivityTarget,newName);
+  closeActivityEdit();
+  renderActivities();
+  renderActivityButtons();
+  renderScheduleButtons();
+  renderSchedule();
+}
+
+function renameActivity(oldName,newName){
+  if(!newName||newName===oldName)return;
+  entries.forEach(e=>{if(e.activity===oldName)e.activity=newName;});
+  save('trio3_entries',entries);
+  schedule.forEach(b=>{if(b.activity===oldName)b.activity=newName;});
+  save('trio3_schedule',schedule);
+  customActivities=customActivities.filter(n=>n!==oldName);
+  if(!customActivities.includes(newName))customActivities.push(newName);
+  save('trio3_activities',customActivities);
+  if(activityColors[oldName]&&!activityColors[newName]){
+    activityColors[newName]=activityColors[oldName];
+  }
+  delete activityColors[oldName];
+  save('trio3_activity_colors',activityColors);
+}
 function clearAll(){if(!confirm('Clear all entries?'))return;entries=[];save('trio3_entries',entries);renderHistory();renderDash();}
 
 // ── GRAPHS ──
-let dirChart=null,capChart=null,giChart=null,fcChart=null;
+let dirChart=null,updownChart=null,capChart=null,giChart=null,fcChart=null;
 
 function renderGraphs(){
   const sorted=[...entries].sort((a,b)=>a.ts-b.ts);
@@ -1508,21 +1690,40 @@ function renderGraphs(){
   const gridCol='rgba(255,255,255,0.04)';
   const textCol='#55556a';
 
-  // DIRECTION line — score mapped to -10..+10
+  // DIRECTION — simple Upward/Downward classification per entry
+  const updownData=sorted.map(e=>calcDirection(e).expanding?1:-1);
+  const updownCol=updownData.map(v=>v>=0?'#3a9065':'#9a3050');
+  if(updownChart)try{updownChart.destroy();}catch(ex){}
+  updownChart=new Chart(document.getElementById('updown-chart').getContext('2d'),{
+    type:'bar',
+    data:{labels,datasets:[{data:updownData,backgroundColor:updownCol,borderRadius:3,barPercentage:0.6}]},
+    options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.parsed.y>=0?'Upward':'Downward'}}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:textCol,font:{size:9},maxRotation:0},border:{display:false}},
+        y:{min:-1,max:1,grid:{color:gridCol,drawBorder:false},ticks:{color:textCol,font:{size:9},stepSize:1,callback:v=>v===1?'↑':v===-1?'↓':''},border:{display:false}}
+      }
+    }
+  });
+
+  // COHERENCE TRAJECTORY line — score mapped to -10..+10, colored by slope (rising vs falling)
   const dirData=sorted.map(e=>calcDirection(e).score);
+  const dirPointCol=dirData.map((v,i)=>{
+    if(i===0)return dirData.length>1&&dirData[1]<v?'#9a3050':'#3a9065';
+    return v>=dirData[i-1]?'#3a9065':'#9a3050';
+  });
   if(dirChart)try{dirChart.destroy();}catch(ex){}
   dirChart=new Chart(document.getElementById('dir-chart').getContext('2d'),{
     type:'line',
     data:{labels,datasets:[{
       data:dirData,
-      borderColor:dirData.map(v=>v>=0?'#3a9065':'#9a3050'),
       borderWidth:2,tension:0.4,fill:false,
-      pointBackgroundColor:dirData.map(v=>v>=0?'#3a9065':'#9a3050'),
+      pointBackgroundColor:dirPointCol,
       pointRadius:5,pointHoverRadius:7,
-      segment:{borderColor:ctx=>ctx.p0.parsed.y>=0?'#3a9065':'#9a3050'},
+      segment:{borderColor:ctx=>ctx.p1.parsed.y>=ctx.p0.parsed.y?'#3a9065':'#9a3050'},
     }]},
     options:{responsive:true,maintainAspectRatio:false,animation:{duration:300},
-      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>{const v=ctx.parsed.y;return v>=0?`↑ Coherence Spiral (${v.toFixed(1)})`:`↓ Dissonance Spiral (${v.toFixed(1)})`;}}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>`Score: ${ctx.parsed.y.toFixed(1)}`}}},
       scales:{
         x:{grid:{color:gridCol},ticks:{color:textCol,font:{size:9},maxRotation:0},border:{display:false}},
         y:{grid:{color:gridCol,drawBorder:false},
@@ -1615,7 +1816,7 @@ function setTab(t){
   if(t==='activities')renderActivities();
   if(t==='graphs'){
     // init canvas divs
-    ['dir-chart','cap-chart','gi-chart','fc-chart'].forEach(id=>{
+    ['updown-chart','dir-chart','cap-chart','gi-chart','fc-chart'].forEach(id=>{
       const cv=document.getElementById(id);
       if(cv&&!cv.parentElement.hasAttribute('data-init')){
         const d=document.createElement('div');d.style.cssText='position:relative;height:'+cv.parentElement.style.height+';';
